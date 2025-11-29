@@ -10,58 +10,169 @@
 const fs = require("fs");
 
 // ---------------------------------------------------------
-//  1) CALLBACK BASED FS API
+//  1) CALLBACK BASED FS API (Detailed Explanation)
 // ---------------------------------------------------------
 
-/** ফাইল পড়া (asynchronous) */
+/**
+ * 1️⃣ ফাইল পড়া (asynchronous)
+ * fs.readFile(filename, encoding, callback)
+ *
+ * - filename → কোন ফাইল পড়তে চাচ্ছি? এখানে "example.txt"
+ * - encoding → কিভাবে content পড়া হবে? "utf-8" এর মানে text হিসেবে পড়া
+ * - callback(err, data) → পড়ার পর Node.js যা করবে, তা লিখি এখানে
+ *     - err → যদি কোনো error হয় (ফাইল না থাকে ইত্যাদি)
+ *     - data → ফাইলের content
+ */
 fs.readFile("example.txt", "utf-8", (err, data) => {
-  // output: file er text print hobe
+  if (err) {
+    console.error("ফাইল পড়া যায়নি:", err);
+    return;
+  }
+  console.log("ফাইলের ভিতরের content:", data);
 });
 
-/** ফাইল লেখা (overwrite করে) */
+/**
+ * 2️⃣ ফাইল লেখা (overwrite)
+ * fs.writeFile(filename, content, callback)
+ *
+ * - filename → কোন ফাইল লিখতে চাচ্ছি? "example.txt"
+ * - content → ফাইলে কি লেখা হবে? "Hello World"
+ * - callback(err) → লেখা শেষ হলে এখানে control আসে
+ *     - err → যদি error হয়
+ */
 fs.writeFile("example.txt", "Hello World", (err) => {
-  // output: file create/overwrite hobe
+  if (err) console.error("ফাইল লেখা যায়নি:", err);
+  else console.log("ফাইল তৈরি/overwrite হয়েছে।");
 });
 
-/** ফাইল append করা */
+/**
+ * 3️⃣ ফাইল append করা
+ * fs.appendFile(filename, content, callback)
+ *
+ * - filename → কোন ফাইলে যোগ করা হবে? "example.txt"
+ * - content → কি যোগ করা হবে? " New Line"
+ * - callback(err) → শেষ হওয়ার পর control আসে
+ */
 fs.appendFile("example.txt", " New Line", (err) => {
-  // output: file er seshe new line add hobe
+  if (err) console.error("ফাইল append করা যায়নি:", err);
+  else console.log("ফাইলের শেষে নতুন লাইন যোগ হয়েছে।");
 });
 
-/** ফাইল delete করা */
+/**
+ * 4️⃣ ফাইল delete করা
+ * fs.unlink(filename, callback)
+ *
+ * - filename → কোন ফাইল মুছতে চাচ্ছি? "example.txt"
+ * - callback(err) → মুছে গেলে control আসে
+ */
 fs.unlink("example.txt", (err) => {
-  // output: file remove hoye jabe
+  if (err) console.error("ফাইল delete করা যায়নি:", err);
+  else console.log("ফাইল সফলভাবে মুছে দেওয়া হয়েছে।");
 });
 
-/** ফাইল আছে কিনা চেক (stats পায়) */
+/**
+ * 5️⃣ ফাইল আছে কিনা এবং info চেক করা
+ * fs.stat(filename, callback)
+ *
+ * - filename → কোন ফাইলের info চাই? "example.txt"
+ * - callback(err, stats)
+ *     - stats → ফাইলের size, isFile(), isDirectory() ইত্যাদি
+ */
 fs.stat("example.txt", (err, stats) => {
-  // output: stats.size, stats.isFile(), stats.isDirectory() etc
+  if (err) console.error("ফাইলের stats পাওয়া যায়নি:", err);
+  else {
+    console.log("ফাইল size:", stats.size);
+    console.log("Is file?", stats.isFile());
+    console.log("Is directory?", stats.isDirectory());
+  }
 });
 
-/** folder create করা */
+/**
+ * 6️⃣ folder create করা
+ * fs.mkdir(path, callback)
+ *
+ * - path → কোন ফোল্ডার তৈরি হবে? "myFolder"
+ * - callback(err) → folder তৈরি হয়ে গেলে control আসে
+ */
 fs.mkdir("myFolder", (err) => {
-  // output: folder create hobe
+  if (err) console.error("ফোল্ডার তৈরি হয়নি:", err);
+  else console.log("ফোল্ডার তৈরি হয়েছে।");
 });
 
-/** folder recursive create */
-fs.mkdir("a/b/c", { recursive: true }, (err) => {});
+/**
+ * 7️⃣ folder recursive create
+ * fs.mkdir(path, { recursive: true }, callback)
+ *
+ * - path → "a/b/c" এমন nested folder তৈরি করা হবে
+ * - recursive: true → parent folder না থাকলেও তৈরি হবে
+ */
+fs.mkdir("a/b/c", { recursive: true }, (err) => {
+  if (err) console.error("Recursive folder তৈরি হয়নি:", err);
+  else console.log("Recursive folders তৈরি হয়েছে।");
+});
 
-/** folder remove */
-fs.rmdir("myFolder", (err) => {});
+/**
+ * 8️⃣ folder remove (empty folder)
+ * fs.rmdir(path, callback)
+ *
+ * - path → কোন folder মুছতে চাচ্ছি? "myFolder"
+ * - callback(err) → মুছে গেলে control আসে
+ */
+fs.rmdir("myFolder", (err) => {
+  if (err) console.error("ফোল্ডার মুছে দেওয়া যায়নি:", err);
+  else console.log("ফোল্ডার মুছে দেওয়া হয়েছে।");
+});
 
-/** folder recursive remove */
-fs.rm("a", { recursive: true, force: true }, (err) => {});
+/**
+ * 9️⃣ folder recursive remove
+ * fs.rm(path, { recursive: true, force: true }, callback)
+ *
+ * - path → কোন folder মুছে হবে? "a"
+ * - recursive → sub-folder + file সব মুছে যাবে
+ * - force → permission error থাকলেও মুছে দিবে
+ */
+fs.rm("a", { recursive: true, force: true }, (err) => {
+  if (err) console.error("Recursive folder remove error:", err);
+  else console.log("Recursive folder মুছে দেওয়া হয়েছে।");
+});
 
-/** folder read -> এর ভিতরের সব file নাম দেখায় */
+/**
+ * 10️⃣ folder read (এর ভিতরের সব file name)
+ * fs.readdir(path, callback)
+ *
+ * - path → কোন folder list করতে চাচ্ছি? "myFolder"
+ * - callback(err, files) → files array পাওয়া যায়
+ */
 fs.readdir("myFolder", (err, files) => {
-  // output: ["file1.txt", "file2.js"]
+  if (err) console.error("ফোল্ডার পড়া যায়নি:", err);
+  else console.log("ফোল্ডারের ভিতরের ফাইলগুলো:", files);
 });
 
-/** ফাইল copy */
-fs.copyFile("src.txt", "dest.txt", (err) => {});
+/**
+ * 11️⃣ file copy
+ * fs.copyFile(src, dest, callback)
+ *
+ * - src → কোন ফাইল কপি হবে? "src.txt"
+ * - dest → কোথায় কপি হবে? "dest.txt"
+ * - callback(err) → copy শেষে control
+ */
+fs.copyFile("src.txt", "dest.txt", (err) => {
+  if (err) console.error("ফাইল কপি হয়নি:", err);
+  else console.log("ফাইল কপি হয়েছে।");
+});
 
-/** rename / move */
-fs.rename("old.txt", "new.txt", (err) => {});
+/**
+ * 12️⃣ rename / move
+ * fs.rename(oldPath, newPath, callback)
+ *
+ * - oldPath → পুরানো ফাইল/ফোল্ডার নাম
+ * - newPath → নতুন নাম বা নতুন জায়গা
+ * - callback(err) → rename / move শেষে control
+ */
+fs.rename("old.txt", "new.txt", (err) => {
+  if (err) console.error("Rename/move failed:", err);
+  else console.log("ফাইল rename/move হয়েছে।");
+});
 
 // ---------------------------------------------------------
 //  2) PROMISE BASED API (fs.promises)
