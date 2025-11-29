@@ -69,8 +69,8 @@ const buf = Buffer.from("Hello");
 fs, path, http, events, crypto, os  
 এইসব Module global এ নেই, তাই import / require করতে হয়
 */
-import fs from "fs";
-import path from "path";
+const fs = require("fs");
+const path = require("path");
 
 /*  
 ==========================================================
