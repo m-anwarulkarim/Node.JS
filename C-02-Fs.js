@@ -273,3 +273,42 @@ readStream.on("data", (chunk) => {
 const writeStream = fs.createWriteStream("output.txt");
 writeStream.write("Writing via stream...");
 writeStream.end();
+
+/**
+ * Node.js FS Module — readFile vs readFileSync
+ * -------------------------------------------
+ * এখানে fs.readFile এবং fs.readFileSync এর মধ্যে পার্থক্য step-by-step
+ * এবং ডিটেইলস সহ
+ */
+
+// ---------------------------------------------------------
+// 1️⃣ Asynchronous Read — fs.readFile (Non-blocking)
+// ---------------------------------------------------------
+/**
+ * - Non-blocking: Node.js এই ফাইল পড়ার কাজ পেছনে (background) করে দেয়।
+ * - এই ফাংশন কল করার পর, Node.js অবশিষ্ট কোড execution চালায়।
+ * - যখন ফাইল পড়া শেষ হয়, তখন callback function execute হয়।
+ * - অনেক ফাইল বা network operation একসাথে করতে সুবিধা হয়।
+ */
+fs.readFile("example.txt", "utf-8", (err, data) => {
+  if (err) {
+    console.error("ফাইল পড়া যায়নি:", err);
+    return;
+  }
+  console.log("Asynchronous Read (Non-blocking):", data);
+});
+
+console.log("এই লাইনটি আগে চলবে, file read হওয়ার আগে।");
+
+// ---------------------------------------------------------
+// 2️⃣ Synchronous Read — fs.readFileSync (Blocking)
+// ---------------------------------------------------------
+/**
+ * - Blocking: Node.js এই ফাইল পড়া শেষ না হওয়া পর্যন্ত পরবর্তী কোড execution শুরু করে না।
+ * - সহজে লেখা যায়, কিন্তু বড় ফাইল বা অনেক ফাইল হলে Node.js পুরো server freeze হতে পারে।
+ * - ছোট স্ক্রিপ্ট বা single task script-এ সুবিধা।
+ */
+const dataSync = fs.readFileSync("example.txt", "utf-8");
+console.log("Synchronous Read (Blocking):", dataSync);
+
+console.log("এই লাইনটি পরে চলবে, কারণ readFileSync blocking।");
