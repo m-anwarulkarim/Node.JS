@@ -1,6 +1,6 @@
 /**
- * Node.js Event Module — Full Bangla Notes
- * ---------------------------------------
+ * Node.js Event Module — Beginner-Friendly Bangla Notes
+ * -----------------------------------------------------
  *
  * Event module Node.js এর core module যা
  * Event Driven Programming এর জন্য ব্যবহার হয়।
@@ -21,79 +21,66 @@ import { EventEmitter } from "events";
  * - একটি EventEmitter object তৈরি করলে আমরা events trigger এবং listen করতে পারি।
  * - "on" method → Event listen করতে
  * - "emit" method → Event trigger করতে
+ *
+ * Tips:
+ * - কখনো কখনো multiple listener থাকলে order matter করতে পারে
+ * - নতুন listener attach করার আগে emit করলে কাজ হবে না
  */
 
 const myEmitter = new EventEmitter();
 
 // ---------------------------------------------------------
-// 2️⃣ Event Listener (কোনো event এর জন্য কোড define করা)
+// 2️⃣ Event Listener
 // ---------------------------------------------------------
 
 /**
- * Example:
- * আমরা "greet" নামে একটি event handle করব।
- *
- * "on" method ব্যবহার করে event handle করি।
+ * Example: "greet" নামে একটি event handle করা
  */
 myEmitter.on("greet", (name: string) => {
   console.log(`Hello, ${name}!`);
 });
+// Tip: on → multiple times trigger হলে সব listener কাজ করবে
 
 // ---------------------------------------------------------
-// 3️⃣ Event Trigger (কোনো event চলানো)
+// 3️⃣ Event Trigger
 // ---------------------------------------------------------
 
-/**
- * Event trigger করার জন্য "emit" ব্যবহার করি।
- * প্রথম parameter → event এর নাম
- * পরের parameter → listener function এ পাঠাতে চাওয়া data
- */
 myEmitter.emit("greet", "Anwarul");
-
 // Output: Hello, Anwarul!
+// Tip: emit → event trigger করে, প্রথম parameter = event name, পরের parameter = data
 
 // ---------------------------------------------------------
 // 4️⃣ Multiple listeners
 // ---------------------------------------------------------
 
-/**
- * একটি event এর জন্য একাধিক listener যুক্ত করা যায়।
- */
 myEmitter.on("greet", (name: string) => {
   console.log(`How are you, ${name}?`);
 });
 
 myEmitter.emit("greet", "Karim");
-
 // Output:
 // Hello, Karim!
 // How are you, Karim?
+// Tip: এক event এর multiple listener থাকতে পারে, সব listener execute হবে
 
 // ---------------------------------------------------------
 // 5️⃣ once() — একবারের listener
 // ---------------------------------------------------------
 
-/**
- * "once" method ব্যবহার করলে listener শুধুমাত্র একবার execute হয়।
- */
 myEmitter.once("login", (user) => {
   console.log(`${user} logged in (once)`);
 });
 
 myEmitter.emit("login", "Anwarul");
+// Output: Anwarul logged in (once)
 myEmitter.emit("login", "Karim");
-
-// Output:
-// Anwarul logged in (once)
-// (দ্বিতীয়বার emit করার সময় কাজ হবে না)
+// Output: (কিছু output হবে না)
+// Tip: once → listener একবার execute হওয়ার পর auto remove হয়ে যায়
 
 // ---------------------------------------------------------
 // 6️⃣ removeListener / off — listener remove করা
 // ---------------------------------------------------------
 
-/**
- * removeListener বা off method ব্যবহার করে listener remove করা যায়।
- */
 function byeListener(name: string) {
   console.log(`Goodbye, ${name}`);
 }
@@ -102,32 +89,24 @@ myEmitter.on("bye", byeListener);
 myEmitter.emit("bye", "Anwarul"); // Output: Goodbye, Anwarul
 
 myEmitter.removeListener("bye", byeListener);
-myEmitter.emit("bye", "Karim"); // আর কিছু output হবে না
+myEmitter.emit("bye", "Karim"); // Output: (কিছু হবে না)
+// Tip: removeListener / off → memory leak বা unwanted listener থেকে বাঁচায়
 
 // ---------------------------------------------------------
-// 7️⃣ EventEmitter এর অন্যান্য গুরুত্বপূর্ণ method
+// 7️⃣ EventEmitter অন্যান্য গুরুত্বপূর্ণ method
 // ---------------------------------------------------------
-
-/**
- * 1) listenerCount(eventName) → একটি event এ কত listener আছে
- * 2) eventNames() → সব registered event এর নামের array
- * 3) setMaxListeners(n) → maximum listeners সংখ্যা set করা
- * 4) getMaxListeners() → current max listener সংখ্যা
- */
 
 console.log("Registered events:", myEmitter.eventNames());
+// Output: ['greet', 'login']
+// Tip: eventNames() → সব active event এর নাম দেখায়
+
 console.log("Listeners count for greet:", myEmitter.listenerCount("greet"));
+// Output: 2
+// Tip: listenerCount(eventName) → একটি event এ কত listener আছে সেটা দেখায়
 
 // ---------------------------------------------------------
-// 8️⃣ Practical example
+// 8️⃣ Practical example (server style events)
 // ---------------------------------------------------------
-
-/**
- * ধরুন আমরা server এর জন্য events ব্যবহার করতে চাই:
- * - dataReceive → যখন ডেটা আসে
- * - error → কোন সমস্যা হলে
- * - close → server close হলে
- */
 
 const serverEmitter = new EventEmitter();
 
@@ -146,60 +125,38 @@ serverEmitter.emit("error", "Something went wrong");
  * Output:
  * Data received: { id: 1, msg: 'Hello' }
  * Error: Something went wrong
- */
-// ************************************************
-// * Node.js EventEmitter Class Example
-// ************************************************
-/**
-
- * ----------------------------------
- * EventEmitter class ব্যবহার করে আমরা custom events তৈরি এবং handle করতে পারি।
+ *
+ * Tip:
+ * - server-like events এ আমরা dataReceive, error, close ইত্যাদি ব্যবহার করতে পারি
+ * - ভুল data type পাঠালে listener crash হতে পারে
  */
 
 // ---------------------------------------------------------
-// 1️⃣ Custom Class তৈরি করে EventEmitter extend করা
+// 9️⃣ Custom Class with EventEmitter
 // ---------------------------------------------------------
 
-/**
- * আমরা একটি custom class বানাচ্ছি যা EventEmitter extend করে
- * এর মাধ্যমে আমরা আমাদের object থেকে events trigger করতে পারব
- */
 class MyServer extends EventEmitter {
   serverName: string;
 
   constructor(name: string) {
-    super(); // EventEmitter এর সব functionality inherit করার জন্য
+    super(); // EventEmitter functionality inherit করা
     this.serverName = name;
   }
 
-  /**
-   * Data receive হলে event trigger করার function
-   */
   receiveData(data: string) {
     console.log(`[${this.serverName}] Data processing...`);
-    // "data" নামে event trigger
     this.emit("data", data);
   }
 
-  /**
-   * Server বন্ধ করার সময় event trigger
-   */
   shutdown() {
     console.log(`[${this.serverName}] Server shutting down...`);
     this.emit("close");
   }
 }
 
-// ---------------------------------------------------------
-// 2️⃣ Object create করা
-// ---------------------------------------------------------
-
 const server = new MyServer("API Server");
 
-// ---------------------------------------------------------
-// 3️⃣ Listener attach করা
-// ---------------------------------------------------------
-
+// Listener attach
 server.on("data", (data) => {
   console.log("Received data:", data);
 });
@@ -208,10 +165,7 @@ server.once("close", () => {
   console.log("Server closed (once listener)");
 });
 
-// ---------------------------------------------------------
-// 4️⃣ Event trigger করা
-// ---------------------------------------------------------
-
+// Trigger events
 server.receiveData("Hello World");
 // Output:
 // [API Server] Data processing...
@@ -233,11 +187,15 @@ server.shutdown();
 // (close listener একবারের জন্য active ছিল, তাই আর output নেই)
 
 // ---------------------------------------------------------
-// 5️⃣ Advantages of class-based EventEmitter
+// 🔹 Tips & Common Mistakes (Beginners Friendly)
 // ---------------------------------------------------------
 
 /**
- * - আমরা EventEmitter কে class হিসেবে encapsulate করতে পারি
- * - Custom properties যোগ করা যায় (যেমন serverName)
- * - Object oriented design + event driven architecture একসাথে পাওয়া যায়
+ * 1. সব listener attach করার আগে emit করলে কাজ হবে না
+ * 2. once → listener একবারের জন্য active, দুইবার emit করলে কাজ করবে না
+ * 3. removeListener / off ব্যবহার করে memory leak এড়ানো
+ * 4. Event name misspell করলে listener কাজ করবে না
+ * 5. EventEmitter class extend করলে OOP + event driven একসাথে ব্যবহার করা যায়
+ * 6. Data type mismatch → listener crash করতে পারে, তাই ঠিক data পাঠাতে হবে
+ * 7. বেশি listener attach করলে process warning দিবে, setMaxListeners(n) দিয়ে সীমা নির্ধারণ করা যায়
  */

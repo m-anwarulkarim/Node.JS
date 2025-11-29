@@ -1,13 +1,15 @@
 /**
- * Node.js HTTP Module —
- * ---------------------------------------
+ * Node.js HTTP Module — Beginner-Friendly Version
+ * -------------------------------------------------
  *
- ** HTTP module দিয়ে আমরা server create করতে পারি, request handle করতে পারি এবং response পাঠাতে পারি।
+ * HTTP module দিয়ে আমরা:
+ * ✅ server create করতে পারি
+ * ✅ incoming request handle করতে পারি
+ * ✅ client কে response পাঠাতে পারি
  *
  * এটি Node.js এর core module, কোন extra installation লাগবে না।
  */
 
-// import http from "http";
 const http = require("http");
 
 // ---------------------------------------------------------
@@ -16,10 +18,14 @@ const http = require("http");
 
 /**
  * http.createServer(callback)
- *
+ * ----------------------------
  * - callback → প্রতিটি incoming request handle করার function
- * - request (req) → client থেকে আসা request (URL, method, headers)
- * - response (res) → server থেকে client কে response পাঠানোর object
+ * - req (request) → client থেকে আসা request (URL, method, headers)
+ * - res (response) → server থেকে client কে response পাঠানোর object
+ *
+ * Tip / ভুল এড়ানোর কথা:
+ * - প্রতিটি request এ res.end() না দিলে browser hang হতে পারে
+ * - res.write() একাধিক বার ব্যবহার করা যায়
  */
 
 const server = http.createServer((req: any, res: any) => {
@@ -41,23 +47,31 @@ const server = http.createServer((req: any, res: any) => {
 
 /**
  * server.listen(port, hostname?, callback)
- *
  * - port → কোন port এ server run করবে
  * - hostname → optional, default: localhost
  * - callback → server start হয়ে গেলে call হবে
+ *
+ * Tip / ভুল এড়ানোর কথা:
+ * - যদি একই port আরেকটা app use করছে → error হবে
  */
+
 server.listen(3000, "127.0.0.1", () => {
   console.log("Server running at http://127.0.0.1:3000/");
 });
 
 // ---------------------------------------------------------
-// 3️⃣ HTTP Methods
+// 3️⃣ HTTP Methods Handle করা
 // ---------------------------------------------------------
 
 /**
- * HTTP module দিয়ে আমরা request.method দেখে
- * GET, POST, PUT, DELETE ইত্যাদি handle করতে পারি।
+ * req.method ব্যবহার করে request type চেক করা যায়
+ * সাধারণত GET, POST, PUT, DELETE ইত্যাদি
+ *
+ * Tip / ভুল এড়ানোর কথা:
+ * - POST/PUT request এর body handle করতে body parse করতে হবে
+ * - শুধুমাত্র GET দেখলে POST request ignore হবে
  */
+
 server.on("request", (req: any, res: any) => {
   if (req.method === "GET") {
     console.log("GET request received for:", req.url);
@@ -73,6 +87,9 @@ server.on("request", (req: any, res: any) => {
 server.on("request", (req: any, res: any) => {
   console.log("Requested URL:", req.url);
   console.log("Request headers:", req.headers);
+
+  // Tip:
+  // headers এ cookies, content-type ইত্যাদি থাকে
 });
 
 // ---------------------------------------------------------
@@ -83,6 +100,10 @@ server.on("request", (req: any, res: any) => {
  * res.writeHead(statusCode, headers) → header set করে
  * res.write(data) → body write করে
  * res.end() → response finish করে
+ *
+ * Tip:
+ * - res.end() না দিলে client response পাবে না
+ * - writeHead() ছাড়া default 200 status code পাঠায়
  */
 
 // ---------------------------------------------------------
@@ -90,13 +111,15 @@ server.on("request", (req: any, res: any) => {
 // ---------------------------------------------------------
 
 /**
- * server.on("eventName", callback) → HTTP server এর events handle করতে পারি
- *
- * সাধারণ event:
+ * server.on("eventName", callback) → HTTP server এর events handle করা যায়
+ * Common events:
  * - request → client থেকে request এলে trigger
  * - connection → নতুন connection এ trigger
  * - close → server বন্ধ হলে trigger
  * - error → error হলে trigger
+ *
+ * Tip:
+ * - error handle না করলে server crash হতে পারে
  */
 
 server.on("connection", (socket: any) => {
@@ -123,4 +146,10 @@ server.on("error", (err: any) => {
  * 5. HTTP methods → GET, POST, PUT, DELETE
  * 6. Response methods → writeHead, write, end
  * 7. Server events → request, connection, close, error
+ *
+ * 💡 Tips / Best Practices:
+ * - সব request এ res.end() ব্যবহার করুন
+ * - POST/PUT body handle করতে body-parser logic লাগবে
+ * - এক port এ একবারে শুধুমাত্র একটি server চলতে পারে
+ * - error event handle না করলে server crash হতে পারে
  */

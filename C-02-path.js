@@ -1,65 +1,51 @@
-/*C-02-path.js
+/* C-02-path.js
 /**
- * Node.js Path Module — Full Bangla Notes
- * ---------------------------------------
+ * Node.js Path Module — Full Beginner-Friendly Bangla Notes
+ * -------------------------------------------------------
  * Path module ফাইল path নিয়ে কাজ করার জন্য ব্যবহার করা হয়।
- * এটি Node.js এর core module, তাই আলাদা করে install করতে হয় না।
+ * এটি Node.js এর core module, তাই আলাদা install করতে হয় না।
+ *
+ * 🔹 Tips & Common mistakes:
+ * - Absolute এবং relative path পার্থক্য বুঝা দরকার
+ * - Windows/Linux path separator ভিন্ন
+ * - join vs resolve → relative vs absolute
+ * - normalize → weird path fix করতে ব্যবহার করা হয়
  */
 
 const path = require("path");
 
 // ---------------------------------------------------------
-// 1) Path Properties
+// 1️⃣ Path Properties
 // ---------------------------------------------------------
+const separator = path.sep; // OS অনুযায়ী path separator (\ /)
+const envDelimiter = path.delimiter; // Environment variable separator (; / :)
+const posixExample = path.posix.join("user", "docs", "a.txt"); // Linux/Mac style
+const win32Example = path.win32.join("user", "docs", "a.txt"); // Windows style
 
-// path.sep → OS অনুযায়ী path separator
-// Windows → \  |  Linux/Mac → /
-const separator = path.sep;
-
-// path.delimiter → Environment variable separator
-// Windows → ;   |  Linux/Mac → :
-const envDelimiter = path.delimiter;
-
-// path.posix → POSIX (Linux/Mac) স্টাইল path functions
-const posixExample = path.posix.join("user", "docs", "a.txt");
-
-// path.win32 → Windows স্টাইল path functions
-const win32Example = path.win32.join("user", "docs", "a.txt");
+// Tip: posix / win32 → cross-platform compatibility test করতে সাহায্য করে
 
 // ---------------------------------------------------------
-// 2) File Path থেকে তথ্য বের করা
+// 2️⃣ File Path থেকে তথ্য বের করা
 // ---------------------------------------------------------
-
-// path.basename() → path থেকে ফাইলের নাম বের করে
 const baseName = path.basename("/home/user/file.txt"); // file.txt
-
-// path.dirname() → path এর directory অংশ দেয়
 const dirName = path.dirname("/home/user/file.txt"); // /home/user
-
-// path.extname() → ফাইলের extension দেয়
 const extName = path.extname("index.html"); // .html
 
-// ---------------------------------------------------------
-// 3) Path Join / Resolve
-// ---------------------------------------------------------
-
-// path.join() → বিভিন্ন অংশকে merge করে সাধারণ path তৈরি করে
-const joinPath = path.join("user", "documents", "photo.png");
-// ফলাফল: user/documents/photo.png
-
-// path.resolve() → absolute path তৈরি করে (current working dir থেকে)
-const resolvePath = path.resolve("folder", "file.txt");
-// যেমন: /Users/you/project/folder/file.txt
+// Tip: extension check করার সময় dot (.) included থাকে
 
 // ---------------------------------------------------------
-// 4) Normalize / Parse / Format
+// 3️⃣ Path Join / Resolve
 // ---------------------------------------------------------
+const joinPath = path.join("user", "documents", "photo.png"); // user/documents/photo.png
+const resolvePath = path.resolve("folder", "file.txt"); // absolute path
 
-// path.normalize() → অদ্ভুত path ঠিক করে smooth করে দেয়
-const normalizePath = path.normalize("a//b/c/..");
-// ফলাফল: a/b
+// Tip: join → relative path, resolve → absolute path
+// Tip: resolve → cwd(current working dir) থেকে absolute path তৈরি করে
 
-// path.parse() → path কে ভাগ করে দেয় → root, dir, base, ext, name
+// ---------------------------------------------------------
+// 4️⃣ Normalize / Parse / Format
+// ---------------------------------------------------------
+const normalizePath = path.normalize("a//b/c/.."); // a/b
 const parsed = path.parse("/home/user/a.txt");
 // {
 //   root: '/',
@@ -68,43 +54,52 @@ const parsed = path.parse("/home/user/a.txt");
 //   ext: '.txt',
 //   name: 'a'
 // }
-
-// path.format() → parse করা object থেকে path বানায়
 const formatted = path.format({
   dir: "/home/user",
   name: "a",
   ext: ".txt",
-});
-// ফলাফল: /home/user/a.txt
+}); // /home/user/a.txt
+
+// Tip: normalize → path cleanup, parse → root/dir/base/ext/name বের করে, format → parse object থেকে path বানায়
 
 // ---------------------------------------------------------
-// 5) Relative এবং Absolute চেক
+// 5️⃣ Relative এবং Absolute চেক
 // ---------------------------------------------------------
-
-// path.relative(from, to) → দুই path এর মধ্যে relative path বের করে
-const relativePath = path.relative("/a/b/c", "/a/d/e");
-// ফলাফল: ../../d/e
-
-// path.isAbsolute() → path absolute কিনা চেক করে
+const relativePath = path.relative("/a/b/c", "/a/d/e"); // ../../d/e
 const isAbs = path.isAbsolute("/home/user"); // true
 
-// ---------------------------------------------------------
-// সবকিছু console.log করে দেখতে চাইলে:
-// ---------------------------------------------------------
+// Tip: relative → two paths এর মধ্যে relation দেখায়
+// Tip: isAbsolute → absolute path confirm করার জন্য
 
-// console.log({
-//   separator,
-//   envDelimiter,
-//   posixExample,
-//   win32Example,
-//   baseName,
-//   dirName,
-//   extName,
-//   joinPath,
-//   resolvePath,
-//   normalizePath,
-//   parsed,
-//   formatted,
-//   relativePath,
-//   isAbs,
-// });
+// ---------------------------------------------------------
+// 6️⃣ Console Output (সব কিছু একসাথে দেখার জন্য)
+// ---------------------------------------------------------
+console.log({
+  separator,
+  envDelimiter,
+  posixExample,
+  win32Example,
+  baseName,
+  dirName,
+  extName,
+  joinPath,
+  resolvePath,
+  normalizePath,
+  parsed,
+  formatted,
+  relativePath,
+  isAbs,
+});
+
+// ---------------------------------------------------------
+// 7️⃣ Common Mistakes / Beginner Tips
+// ---------------------------------------------------------
+/**
+ * ✅ Windows/Linux path separator ভিন্ন → cross-platform test করতে হবে
+ * ✅ join → relative path, resolve → absolute path
+ * ✅ normalize → weird path correct করতে ব্যবহার করা
+ * ✅ basename → extension included থাকে
+ * ✅ parse → path ভাগ করা, format → parse থেকে path বানানো
+ * ✅ relative → path relation দেখায়, cwd change হলে different result আসতে পারে
+ * ✅ isAbsolute → true/false check
+ */
