@@ -1,8 +1,8 @@
 /**
- * Node.js Global vs Module Objects — Beginner-Friendly
+ * Node.js Global vs Module Objects —
  * -----------------------------------------------------
  * প্রতিটি অংশ step-by-step ব্যাখ্যা + short output
- * এবং global vs module এর পার্থক্য বোঝানো হয়েছে
+ * এবং global vs module এর পার্থক্য
  */
 
 ///////////////////////////////
@@ -47,15 +47,6 @@ const buf = Buffer.from("Hello");
 console.log("Buffer:", buf);
 // Output: <Buffer 48 65 6c 6c 6f>
 // Tip: Buffer ব্যবহার করে file, network, binary data manage করা যায়
-
-// 5) queueMicrotask → Microtask queue এ কাজ পাঠায়
-queueMicrotask(() => console.log("Microtask executed"));
-// Output: Microtask executed
-// Tip: Promise.then এর মতো asynchronous ছোট কাজ execute করতে ব্যবহার হয়
-
-// 6) fetch / AbortController (Node v18+) → HTTP request & control
-// Tip: Node v18+ এ fetch global, network request করতে ব্যবহার হয়
-// Tip: AbortController → request cancel করতে সাহায্য করে
 
 ///////////////////////////////
 // 2️⃣ NON-GLOBAL MODULES (Import করতে হয়)
